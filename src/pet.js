@@ -1,15 +1,22 @@
 const MAXIMUM_FITNESS = 10;
+const MINIMUM_AGE = 0;
+const MINIMUM_HUNGER = 0;
+const MAXIMUM_AGE = 30;
+const MAXIMUM_HUNGER = 10;
+const MINIMUM_FITNESS = 0;
+
 function Pet(name) {
     this.name = name;
-    this.age = 0;
-    this.hunger = 0;
-    this.fitness = 10;
+    this.age = MINIMUM_AGE;
+    this.hunger = MINIMUM_HUNGER;
+    this.fitness = MAXIMUM_FITNESS;
     this.children = [];
 }
 
+
 Pet.prototype = {
     get isAlive() {
-        return this.age < 30 && this.hunger < 10 && this.fitness > 0;
+        return this.age < MAXIMUM_AGE && this.hunger < MAXIMUM_HUNGER && this.fitness > MINIMUM_FITNESS;
          }
     }
 
@@ -24,17 +31,19 @@ Pet.prototype.growUp = function () {
     this.fitness -= 3;
 };
 
+
 Pet.prototype.walk = function() {
 
     if (!this.isAlive) {
         throw new Error('Your pet is no longer alive :(');
     }
 
-    if((this.fitness + 4) <= 10 ) {
-        this.fitness += 4;
-    } else {
-        this.fitness = 10;
+    this.fitness += 4;
+
+    if (this.fitness > MAXIMUM_FITNESS) {
+        this.fitness = MAXIMUM_FITNESS
     }
+
 }
 
 Pet.prototype.feed = function() {
@@ -43,26 +52,31 @@ Pet.prototype.feed = function() {
         throw new Error('Your pet is no longer alive :(');
     }
 
+    this.hunger -= 3;
 
-    if((this.hunger - 3) >= 0 ) {
-        this.hunger -= 3;
-    } else {
-        this.hunger = 0;
+    if (this.hunger < 0) {
+        this.hunger = 0
     }
+
 }
 
 Pet.prototype.checkup = function() {
 
-    if(this.fitness <= 3 && this.hunger >= 5) {
-        return 'I am hungry AND I need a walk'
+    const isUnfit = this.fitness <= 3;
+    const isHungry = this.hunger >= 5;
+    const iAmHungry = "I am hungry";
+    const iNeedAWalk = "I need a walk"
+
+    if(isUnfit && isHungry) {
+        return `${iAmHungry} AND ${iNeedAWalk}`
     }
 
-    if(this.fitness <= 3) {
-        return "I need a walk";
+    if(isUnfit) {
+        return iNeedAWalk;
     }
 
-    if(this.hunger >= 5) {
-        return "I am hungry";
+    if(isHungry) {
+        return iAmHungry;
     }
 
     return 'I feel great';
